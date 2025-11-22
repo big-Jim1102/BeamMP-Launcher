@@ -211,21 +211,24 @@ void CheckForUpdates(const std::string& CV) {
             error("Auto update is NOT implemented for the Linux version. Please update manually ASAP as updates contain security patches.");
 #else
             info("Downloading Launcher update " + LatestHash);
-            HTTP::Download(
+            if (HTTP::Download(
                 "https://backend.beammp.com/builds/launcher?download=true"
                 "&pk="
                     + PublicKey + "&branch=" + Branch,
-                GetBP() / (beammp_wide("new_") + GetEN()), LatestHash);
-            std::error_code ec;
-            fs::remove(Back, ec);
-            if (ec == std::errc::permission_denied) {
-                error("Failed to remove old backup file: " + ec.message() + ". Using alternative name.");
-                fs::rename(BP, Back + beammp_wide(".") + Utils::ToWString(FileHash.substr(0, 8)));
+                GetBP() / (beammp_wide("new_") + GetEN()), LatestHash)) {
+                std::error_code ec;
+                fs::remove(Back, ec);
+                if (ec == std::errc::permission_denied) {
+                    error("Failed to remove old backup file: " + ec.message() + ". Using alternative name.");
+                    fs::rename(BP, Back + beammp_wide(".") + Utils::ToWString(FileHash.substr(0, 8)));
+                } else {
+                    fs::rename(BP, Back);
+                }
+                fs::rename(GetBP() / (beammp_wide("new_") + GetEN()), BP);
+                URelaunch();
             } else {
-                fs::rename(BP, Back);
+                throw std::runtime_error("Failed to download the launcher update! Please try manually updating it, https://docs.beammp.com/FAQ/Update-launcher/");
             }
-            fs::rename(GetBP() / (beammp_wide("new_") + GetEN()), BP);
-            URelaunch();
 #endif
         } else {
             warn("Launcher update was found, but not updating because --no-update or --dev was specified.");
