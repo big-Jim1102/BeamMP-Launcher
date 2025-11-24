@@ -94,6 +94,16 @@ jobs:
             \`\`\`bash
             sudo dpkg -i beammp-launcher_*.deb
             sudo apt-get install -f
+            \`\`\`
+            
+            ### Uninstallation
+            \`\`\`bash
+            sudo apt-get remove beammp-launcher
+            \`\`\`
+            
+            Or to remove with configuration files:
+            \`\`\`bash
+            sudo apt-get purge beammp-launcher
             \`\`\``;
             
             const response = await github.rest.repos.createRelease({

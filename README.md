@@ -145,6 +145,29 @@ For more help, visit:
 
 **Note:** This launcher does not support automatic updates. You must manually update the launcher when new versions are released.
 
+## Uninstalling
+
+### Linux
+
+To completely remove BeamMP Launcher from your system:
+
+```bash
+sudo apt-get remove beammp-launcher
+```
+
+Or if you want to remove it along with configuration files:
+
+```bash
+sudo apt-get purge beammp-launcher
+```
+
+This will:
+- Remove the `BeamMP-Launcher` binary from `/usr/bin/`
+- Remove the desktop menu entry
+- Optionally remove configuration files (with `purge`)
+
+**Note:** This will not remove any BeamMP mod files or game data. Those are stored in your BeamNG.drive directory.
+
 ## Development
 
 ### Building .deb Packages
