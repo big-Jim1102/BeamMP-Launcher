@@ -61,38 +61,96 @@ jobs:
             build-deb/*.deb
             *.deb
       
-      - name: List .deb files
+      - name: Find .deb file
         if: startsWith(github.ref, 'refs/tags/')
+        id: find-deb
         run: |
-          echo "Checking for .deb files..."
-          ls -la build-deb/*.deb 2>/dev/null || echo "No files in build-deb/"
-          ls -la *.deb 2>/dev/null || echo "No files in root/"
-          find . -name "*.deb" -type f || echo "No .deb files found anywhere"
+          echo "Searching for .deb files..."
+          DEB_FILE=$(find . -name "*.deb" -type f | head -n 1)
+          if [ -z "$DEB_FILE" ]; then
+            echo "ERROR: No .deb file found!"
+            find . -name "*.deb" -type f
+            exit 1
+          fi
+          echo "Found .deb file: $DEB_FILE"
+          echo "file=$DEB_FILE" >> $GITHUB_OUTPUT
+          ls -lh "$DEB_FILE"
       
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
+        id: create-release
+        uses: actions/github-script@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          body: |
-            ## BeamMP Launcher ${{ github.ref_name }}
+          script: |
+            const tagName = context.ref.replace('refs/tags/', '');
+            const releaseName = `Release ${tagName}`;
+            const releaseBody = `## BeamMP Launcher ${tagName}
             
             Linux .deb package for BeamMP Launcher.
             
             ### Installation
-            ```bash
+            \`\`\`bash
             sudo dpkg -i beammp-launcher_*.deb
             sudo apt-get install -f
-            ```
-          files: |
-            build-deb/*.deb
-            *.deb
-          draft: false
-          prerelease: false
-          generate_release_notes: false
+            \`\`\``;
+            
+            const response = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tagName,
+              name: releaseName,
+              body: releaseBody,
+              draft: false,
+              prerelease: false
+            });
+            
+            console.log(`Release created: ${response.data.id}`);
+            core.setOutput('release_id', response.data.id);
+            core.setOutput('upload_url', response.data.upload_url);
+      
+      - name: Upload .deb to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/github-script@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const debFile = '${{ steps.find-deb.outputs.file }}';
+            
+            if (!fs.existsSync(debFile)) {
+              throw new Error(`.deb file not found: ${debFile}`);
+            }
+            
+            const fileName = path.basename(debFile);
+            const fileSize = fs.statSync(debFile).size;
+            const fileContent = fs.readFileSync(debFile);
+            
+            console.log(`Uploading ${fileName} (${fileSize} bytes)...`);
+            
+            const tagName = context.ref.replace('refs/tags/', '');
+            const release = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tagName
+            });
+            
+            await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              name: fileName,
+              data: fileContent,
+              headers: {
+                'content-type': 'application/vnd.debian.binary-package',
+                'content-length': fileSize
+              }
+            });
+            
+            console.log(`Successfully uploaded ${fileName} to release ${tagName}`);
 
 
 
