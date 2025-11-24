@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=BeamMP Launcher
+GenericName=BeamMP Launcher
+Comment=Launcher for the BeamMP mod for BeamNG.drive
+Exec=BeamMP-Launcher
+Icon=application-x-executable
+Terminal=true
+Categories=Game;
+Keywords=beammp;beamng;drive;multiplayer;launcher;game;
+StartupNotify=false
+NoDisplay=false

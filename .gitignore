@@ -3,6 +3,7 @@ cmake-build-release
 /.idea/
 *.log
 /*.sh
+!build-deb.sh
 /*.obj
 /*.exe
 .cache/
@@ -13,3 +14,7 @@ bin/
 compile_commands.json
 key
 out/
+# Build artifacts
+build-deb/
+*.deb
+vcpkg/
