@@ -7,7 +7,6 @@ The official launcher for the [BeamMP](https://beammp.com/) mod for BeamNG.drive
 - 🚀 Automatic mod download and installation
 - 🎮 Seamless game launching
 - 🌐 Server connection management
-- 🔄 Automatic launcher updates (Windows only)
 - 🐧 Full Linux support with desktop integration
 
 ## Installation
@@ -38,17 +37,12 @@ See [BUILD.md](BUILD.md) for detailed build instructions, or [QUICKSTART.md](QUI
 sudo dpkg -i beammp-launcher_*.deb
 ```
 
-### Windows
-
-Download the latest installer from the [official BeamMP website](https://beammp.com/) or [GitHub Releases](https://github.com/BeamMP/BeamMP-Launcher/releases).
-
 ## Quick Start
 
 1. **Install BeamMP Launcher** (see Installation above)
 
 2. **Launch the application:**
-   - **Linux:** Open "BeamMP Launcher" from your applications menu or run `BeamMP-Launcher` in terminal
-   - **Windows:** Run the installed BeamMP Launcher executable
+   - Open "BeamMP Launcher" from your applications menu or run `BeamMP-Launcher` in terminal
 
 3. **The launcher will:**
    - Automatically download and install the BeamMP mod
@@ -59,18 +53,12 @@ Download the latest installer from the [official BeamMP website](https://beammp.
 
 ## Requirements
 
-### Linux
-- Debian/Ubuntu or compatible distribution
+### Requirements
+- Debian/Ubuntu or compatible Linux distribution
 - BeamNG.drive installed (Steam or standalone)
 - Dependencies: `libcurl4` (or `libcurl3t64`), `libssl3` (or `libssl1.1`)
 
-### Windows
-- Windows 7 or later
-- BeamNG.drive installed
-
 ## Building from Source
-
-### Linux
 
 **Prerequisites:**
 ```bash
@@ -93,10 +81,6 @@ cd BeamMP-Launcher
 ```
 
 For detailed instructions, see [BUILD.md](BUILD.md).
-
-### Windows
-
-See the [official documentation](https://docs.beammp.com/) for Windows build instructions.
 
 ## Usage
 
@@ -124,8 +108,6 @@ Available options:
 3. **Important:** Keep the launcher window open while playing!
 
 ## Troubleshooting
-
-### Linux
 
 **Launcher won't start:**
 - Check that all dependencies are installed: `sudo apt-get install -f`
@@ -161,11 +143,7 @@ For more help, visit:
 2. Remove old version: `sudo apt-get remove beammp-launcher`
 3. Install new version: `sudo dpkg -i beammp-launcher_*.deb`
 
-**Note:** Linux version does not support automatic updates. You must manually update the launcher when new versions are released.
-
-### Windows
-
-The launcher will automatically check for updates and prompt you to update when available.
+**Note:** This launcher does not support automatic updates. You must manually update the launcher when new versions are released.
 
 ## Development
 
@@ -215,4 +193,6 @@ You should have received a copy of the GNU Affero General Public License along w
 
 ---
 
-**Note for Linux users:** This launcher requires manual updates. Always check the [Releases](https://github.com/BeamMP/BeamMP-Launcher/releases) page for the latest version, especially when security updates are announced.
+**Note:** This launcher requires manual updates. Always check the [Releases](https://github.com/BeamMP/BeamMP-Launcher/releases) page for the latest version, especially when security updates are announced.
+
+**Windows users:** For Windows installation, please visit the [official BeamMP website](https://beammp.com/).

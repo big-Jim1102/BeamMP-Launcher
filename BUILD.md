@@ -180,72 +180,7 @@ sudo apt-get install -f  # Fix any dependency issues
 
 ## Automation with GitHub Actions
 
-You can automate the build process using GitHub Actions. Create `.github/workflows/build-deb.yml`:
-
-```yaml
-name: Build .deb Package
-
-on:
-  push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version number'
-        required: true
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            cmake \
-            git \
-            dpkg-dev \
-            libssl-dev \
-            libcurl4-openssl-dev \
-            zlib1g-dev
-      
-      - name: Setup vcpkg
-        run: |
-          git clone https://github.com/Microsoft/vcpkg.git
-          cd vcpkg
-          ./bootstrap-vcpkg.sh
-      
-      - name: Build .deb
-        run: |
-          chmod +x build-deb.sh
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            ./build-deb.sh "${{ github.event.inputs.version }}"
-          else
-            ./build-deb.sh
-          fi
-        env:
-          VCPKG_ROOT: ${{ github.workspace }}/vcpkg
-      
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: beammp-launcher-deb
-          path: build-deb/*.deb
-      
-      - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
-        with:
-          files: build-deb/*.deb
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
+The repository includes a GitHub Actions workflow (`.github/workflows/build-deb.yml`) that automatically builds .deb packages when you push version tags. See the workflow file for details.
 
 ## Troubleshooting
 
